@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⛏ 我的待办 · MINECRAFT EDITION</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ========== 全局：深色像素世界 ========== */
+        body {
+            font-family: 'Courier New', 'Consolas', monospace;
+            background-color: #1c1c1c;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+                radial-gradient(circle at 50% 0%, #2a2a3a 0%, #1c1c1c 65%);
+            background-size: 16px 16px, 16px 16px, 100% 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            color: #e8e8e8;
+            image-rendering: pixelated;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ========== 主容器：石质方块 ========== */
+        .app-container {
+            width: 1200px;
+            max-width: 100%;
+            background-color: #4a4a4a;
+            background-image:
+                repeating-linear-gradient(45deg, transparent 0, transparent 4px, rgba(0,0,0,0.045) 4px, rgba(0,0,0,0.045) 8px),
+                repeating-linear-gradient(-45deg, transparent 0, transparent 4px, rgba(255,255,255,0.025) 4px, rgba(255,255,255,0.025) 8px);
+            padding: 28px;
+            display: flex;
+            gap: 24px;
+            border: 4px solid #1a1a1a;
+            box-shadow:
+                0 0 0 4px #6a6a6a,
+                0 0 0 8px #1a1a1a,
+                12px 12px 0 0 rgba(0,0,0,0.5);
+            border-radius: 0;
+        }
+
+        /* ========== 侧边栏：木质方块 ========== */
+        .sidebar {
+            flex: 0 0 300px;
+            background-color: #4a3320;
+            background-image:
+                repeating-linear-gradient(0deg, transparent 0, transparent 20px, rgba(0,0,0,0.15) 20px, rgba(0,0,0,0.15) 22px),
+                repeating-linear-gradient(90deg, transparent 0, transparent 90px, rgba(0,0,0,0.1) 90px, rgba(0,0,0,0.1) 94px);
+            padding: 24px 18px;
+            border: 4px solid #1a1a1a;
+            box-shadow:
+                inset 3px 3px 0 rgba(255,255,255,0.15),
+                inset -3px -3px 0 rgba(0,0,0,0.35);
+            display: flex;
+            flex-direction: column;
+            border-radius: 0;
+        }
+
+        .logo {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 13px;
+            color: #f5c842;
+            text-shadow: 2px 2px 0 #000, 0 0 12px rgba(245,200,66,0.35);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+            letter-spacing: 0;
+            line-height: 1.6;
+        }
+
+        .logo i {
+            font-size: 20px;
+            color: #7cbd56;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .auth-section {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            flex: 1;
+        }
+
+        /* ========== 认证卡片：深色方块 ========== */
+        .auth-card {
+            background-color: #2a2a2a;
+            border: 3px solid #1a1a1a;
+            box-shadow:
+                inset 2px 2px 0 rgba(255,255,255,0.06),
+                inset -2px -2px 0 rgba(0,0,0,0.4),
+                4px 4px 0 rgba(0,0,0,0.35);
+            padding: 16px;
+            border-radius: 0;
+        }
+
+        .auth-card h3 {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 9px;
+            color: #7cbd56;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.6;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        /* ========== 输入框：黑曜石风 ========== */
+        .input-group {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7cbd56;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 12px 12px 38px;
+            background-color: #1a1a1a;
+            border: 3px solid #6a6a6a;
+            box-shadow: inset 2px 2px 0 rgba(0,0,0,0.6);
+            color: #f5f5f5;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.3px;
+            transition: border-color 0.1s, box-shadow 0.1s;
+            border-radius: 0;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #7cbd56;
+            box-shadow:
+                inset 2px 2px 0 rgba(0,0,0,0.6),
+                0 0 0 3px rgba(124,189,86,0.25);
+        }
+
+        .input-group input::placeholder {
+            color: #6a6a6a;
+            font-weight: bold;
+        }
+
+        /* ========== 按钮：立体像素块 ========== */
+        .btn {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 9px;
+            padding: 14px 14px;
+            width: 100%;
+            border: 3px solid #1a1a1a;
+            cursor: pointer;
+            border-radius: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.08s;
+        }
+
+        .btn i {
+            font-size: 11px;
+        }
+
+        /* 主按钮：绿宝石 */
+        .btn-primary {
+            background-color: #3a9c3a;
+            color: #f5f5f5;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.7);
+            box-shadow:
+                inset 3px 3px 0 rgba(255,255,255,0.3),
+                inset -3px -3px 0 rgba(0,0,0,0.4);
+        }
+        .btn-primary:hover {
+            background-color: #47b547;
+        }
+        .btn-primary:active {
+            box-shadow:
+                inset -3px -3px 0 rgba(255,255,255,0.25),
+                inset 3px 3px 0 rgba(0,0,0,0.4);
+            transform: translate(1px, 1px);
+        }
+
+        /* 次按钮：石头 */
+        .btn-secondary {
+            background-color: #6a6a6a;
+            color: #f5f5f5;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.7);
+            box-shadow:
+                inset 3px 3px 0 rgba(255,255,255,0.2),
+                inset -3px -3px 0 rgba(0,0,0,0.4);
+        }
+        .btn-secondary:hover {
+            background-color: #7a7a7a;
+        }
+        .btn-secondary:active {
+            box-shadow:
+                inset -3px -3px 0 rgba(255,255,255,0.2),
+                inset 3px 3px 0 rgba(0,0,0,0.4);
+            transform: translate(1px, 1px);
+        }
+
+        /* ========== 用户徽章 / Token ========== */
+        .user-badge {
+            background-color: #1e3a1e;
+            border: 3px solid #1a1a1a;
+            box-shadow:
+                inset 2px 2px 0 rgba(124,189,86,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.3);
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #7cbd56;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            border-radius: 0;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
+        }
+
+        .user-badge span i {
+            margin-right: 6px;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #c63a3a;
+            cursor: pointer;
+            font-size: 15px;
+            padding: 4px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.7);
+        }
+        .logout-btn:hover {
+            color: #ff5555;
+        }
+
+        .token-info {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: #7cbd56;
+            word-break: break-all;
+            margin-top: 10px;
+            background-color: #0f1a0f;
+            padding: 8px 10px;
+            border: 2px solid #1a1a1a;
+            border-radius: 0;
+            letter-spacing: 0.3px;
+        }
+
+        /* ========== 右侧主内容 ========== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 4px;
+            gap: 12px;
+        }
+
+        .header-bar h1 {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 16px;
+            color: #f5c842;
+            text-shadow: 3px 3px 0 #000, 0 0 16px rgba(245,200,66,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.5;
+            letter-spacing: 0;
+        }
+
+        .header-bar h1 i {
+            color: #7cbd56;
+        }
+
+        #authHint {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #2a2a2a;
+            border: 2px solid #1a1a1a;
+            padding: 6px 14px;
+            color: #aaa;
+            border-radius: 0;
+            box-shadow: inset 2px 2px 0 rgba(0,0,0,0.4);
+            white-space: nowrap;
+        }
+
+        /* ========== 添加任务表单 ========== */
+        .add-todo-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .add-todo-form input {
+            flex: 1;
+            padding: 14px 16px;
+            background-color: #1a1a1a;
+            border: 3px solid #6a6a6a;
+            box-shadow: inset 2px 2px 0 rgba(0,0,0,0.6);
+            color: #f5f5f5;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 0;
+            outline: none;
+            letter-spacing: 0.3px;
+            transition: border-color 0.1s, box-shadow 0.1s;
+        }
+        .add-todo-form input:focus {
+            border-color: #7cbd56;
+            box-shadow:
+                inset 2px 2px 0 rgba(0,0,0,0.6),
+                0 0 0 3px rgba(124,189,86,0.25);
+        }
+        .add-todo-form input::placeholder {
+            color: #6a6a6a;
+        }
+
+        .add-todo-form button {
+            padding: 14px 24px;
+            background-color: #3a9c3a;
+            border: 3px solid #1a1a1a;
+            box-shadow:
+                inset 3px 3px 0 rgba(255,255,255,0.3),
+                inset -3px -3px 0 rgba(0,0,0,0.4),
+                4px 4px 0 rgba(0,0,0,0.35);
+            color: #f5f5f5;
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 10px;
+            cursor: pointer;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.7);
+            white-space: nowrap;
+            transition: all 0.08s;
+            line-height: 1.5;
+        }
+        .add-todo-form button:hover {
+            background-color: #47b547;
+        }
+        .add-todo-form button:active {
+            transform: translate(2px, 2px);
+            box-shadow:
+                inset -3px -3px 0 rgba(255,255,255,0.25),
+                inset 3px 3px 0 rgba(0,0,0,0.4);
+        }
+
+        /* ========== 任务区：物品栏 ========== */
+        .todos-section {
+            flex: 1;
+            background-color: #3a3a3a;
+            border: 4px solid #1a1a1a;
+            box-shadow:
+                inset 3px 3px 0 rgba(0,0,0,0.3),
+                inset -3px -3px 0 rgba(255,255,255,0.05),
+                6px 6px 0 rgba(0,0,0,0.35);
+            padding: 12px 8px 8px 8px;
+            display: flex;
+            flex-direction: column;
+            min-height: 360px;
+            border-radius: 0;
+        }
+
+        .todos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 12px 12px 12px;
+            border-bottom: 3px dashed #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .todos-header h2 {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 11px;
+            color: #f5f5f5;
+            text-shadow: 2px 2px 0 #000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.6;
+        }
+        .todos-header h2 i {
+            color: #f5c842;
+            font-size: 13px;
+        }
+
+        .refresh-btn {
+            background-color: #6a6a6a;
+            border: 2px solid #1a1a1a;
+            color: #f5f5f5;
+            font-size: 13px;
+            padding: 6px 10px;
+            cursor: pointer;
+            box-shadow:
+                inset 2px 2px 0 rgba(255,255,255,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.35);
+            border-radius: 0;
+            transition: all 0.08s;
+        }
+        .refresh-btn:hover {
+            background-color: #7a7a7a;
+        }
+        .refresh-btn:active {
+            box-shadow:
+                inset -2px -2px 0 rgba(255,255,255,0.2),
+                inset 2px 2px 0 rgba(0,0,0,0.35);
+            transform: translate(1px, 1px);
+        }
+
+        /* ========== 任务项 ========== */
+        .todo-list {
+            list-style: none;
+            overflow-y: auto;
+            flex: 1;
+            padding: 4px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 440px;
+        }
+
+        .todo-item {
+            background-color: #5a5a5a;
+            border: 3px solid #1a1a1a;
+            box-shadow:
+                inset 2px 2px 0 rgba(255,255,255,0.12),
+                inset -2px -2px 0 rgba(0,0,0,0.3),
+                3px 3px 0 rgba(0,0,0,0.3);
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 0;
+            transition: background-color 0.1s;
+            animation: fadeIn 0.15s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .todo-item:hover {
+            background-color: #6a6a6a;
+        }
+
+        .todo-check {
+            width: 26px;
+            height: 26px;
+            border: 3px solid #1a1a1a;
+            background-color: #2a2a2a;
+            box-shadow: inset 2px 2px 0 rgba(0,0,0,0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 0;
+            transition: all 0.1s;
+        }
+        .todo-check.completed {
+            background-color: #17dd62;
+            border-color: #0a8a3f;
+            box-shadow:
+                inset 2px 2px 0 rgba(255,255,255,0.4),
+                0 0 10px rgba(23,221,98,0.5);
+        }
+        .todo-check.completed i {
+            color: #0a3a1f;
+            font-size: 13px;
+        }
+
+        .todo-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .todo-title {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 16px;
+            color: #f5f5f5;
+            word-break: break-word;
+            letter-spacing: 0.3px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+        }
+        .todo-title.completed {
+            color: #8a8a8a;
+            text-decoration: line-through;
+            text-decoration-color: #c63a3a;
+            text-decoration-thickness: 2px;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .icon-btn {
+            width: 34px;
+            height: 34px;
+            border: 3px solid #1a1a1a;
+            background-color: #6a6a6a;
+            color: #f5f5f5;
+            box-shadow:
+                inset 2px 2px 0 rgba(255,255,255,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.35);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0;
+            font-size: 13px;
+            transition: all 0.08s;
+        }
+        .icon-btn:active {
+            box-shadow:
+                inset -2px -2px 0 rgba(255,255,255,0.2),
+                inset 2px 2px 0 rgba(0,0,0,0.35);
+            transform: translate(1px, 1px);
+        }
+        .icon-btn.delete:hover {
+            background-color: #c63a3a;
+        }
+
+        /* ========== 空状态 ========== */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #8a8a8a;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            letter-spacing: 0.5px;
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: #5a5a5a;
+            text-shadow: 3px 3px 0 #1a1a1a;
+        }
+
+        /* ========== Toast ========== */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: #2a2a2a;
+            border: 3px solid #1a1a1a;
+            box-shadow:
+                inset 2px 2px 0 rgba(255,255,255,0.1),
+                inset -2px -2px 0 rgba(0,0,0,0.4),
+                6px 6px 0 rgba(0,0,0,0.4);
+            padding: 14px 22px;
+            color: #f5f5f5;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            border-radius: 0;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 999;
+            transition: opacity 0.2s, transform 0.2s;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ========== 像素滚动条 ========== */
+        .todo-list::-webkit-scrollbar {
+            width: 10px;
+        }
+        .todo-list::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border: 2px solid #0a0a0a;
+        }
+        .todo-list::-webkit-scrollbar-thumb {
+            background: #6a6a6a;
+            border: 2px solid #1a1a1a;
+        }
+        .todo-list::-webkit-scrollbar-thumb:hover {
+            background: #7cbd56;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 900px) {
+            body {
+                padding: 12px;
+            }
+            .app-container {
+                flex-direction: column;
+                padding: 16px;
+                gap: 16px;
+                box-shadow:
+                    0 0 0 3px #6a6a6a,
+                    0 0 0 6px #1a1a1a,
+                    6px 6px 0 rgba(0,0,0,0.5);
+            }
+            .sidebar {
+                flex: auto;
+                width: 100%;
+                padding: 16px 14px;
+            }
+            .add-todo-form {
+                flex-direction: column;
+            }
+            .add-todo-form button {
+                width: 100%;
+                justify-content: center;
+            }
+            .header-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-bar h1 {
+                font-size: 12px;
+            }
+            .logo {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- 侧边栏认证区域 -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-cube"></i>
+            <span>我的世界任务表</span>
+        </div>
+
+        <div class="auth-section">
+            <!-- 注册卡片 -->
+            <div class="auth-card">
+                <h3><i class="fas fa-user-plus"></i> 创建账户</h3>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="regUsername" placeholder="用户名" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPassword" placeholder="密码">
+                </div>
+                <button class="btn btn-secondary" id="registerBtn">
+                    <i class="fas fa-hammer"></i> 注册
+                </button>
+            </div>
+
+            <!-- 登录卡片 -->
+            <div class="auth-card">
+                <h3><i class="fas fa-sign-in-alt"></i> 登录账户</h3>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginUsername" placeholder="用户名" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="密码">
+                </div>
+                <button class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-door-open"></i> 登录
+                </button>
+            </div>
+
+            <!-- 已登录状态信息 -->
+            <div id="loggedInPanel" style="display: none;">
+                <div class="user-badge">
+                    <span><i class="fas fa-user-circle"></i> <span id="currentUsername">用户</span></span>
+                    <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+                <div class="token-info" id="tokenPreview">Token: ...</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <div class="header-bar">
+            <h1><i class="fas fa-list-check"></i> 我的任务</h1>
+            <span id="authHint">
+                <i class="fas fa-lock"></i> 未登录
+            </span>
+        </div>
+
+        <!-- 添加任务表单 -->
+        <div class="add-todo-form" id="addTodoContainer">
+            <input type="text" id="newTodoTitle" placeholder="写一个全新的任务..." autocomplete="off">
+            <button id="addTodoBtn"><i class="fas fa-plus-circle"></i> 添加</button>
+        </div>
+
+        <!-- 任务列表卡片 -->
+        <div class="todos-section">
+            <div class="todos-header">
+                <h2><i class="fas fa-tasks"></i> 任务列表</h2>
+                <button class="refresh-btn" id="refreshTodosBtn"><i class="fas fa-rotate-right"></i></button>
+            </div>
+            <ul class="todo-list" id="todoList">
+                <!-- 动态渲染 -->
+            </ul>
+        </div>
+    </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    (function(){
+        // ⭐⭐⭐ 核心配置：因为你的 Flask 后端设置了 url_prefix="/api" ⭐⭐⭐
+        // 所以所有请求必须以 /api 开头
+        const API_BASE = '/api';
+
+        let currentToken = localStorage.getItem('access_token') || null;
+        let currentUsername = localStorage.getItem('username') || null;
+        let todos = [];
+
+        // DOM 元素
+        const regUsername = document.getElementById('regUsername');
+        const regPassword = document.getElementById('regPassword');
+        const registerBtn = document.getElementById('registerBtn');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loggedInPanel = document.getElementById('loggedInPanel');
+        const currentUsernameSpan = document.getElementById('currentUsername');
+        const tokenPreview = document.getElementById('tokenPreview');
+        const authHint = document.getElementById('authHint');
+        const todoListEl = document.getElementById('todoList');
+        const newTodoTitle = document.getElementById('newTodoTitle');
+        const addTodoBtn = document.getElementById('addTodoBtn');
+        const refreshTodosBtn = document.getElementById('refreshTodosBtn');
+        const addTodoContainer = document.getElementById('addTodoContainer');
+
+        // ----- 工具函数 -----
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? '#5a1a1a' : '#2a2a2a';
+            toast.style.borderColor = isError ? '#c63a3a' : '#1a1a1a';
+            toast.classList.add('show');
+            clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2600);
+        }
+
+        // 带认证头的请求封装
+        async function authFetch(url, options = {}) {
+            const headers = options.headers || {};
+            if (currentToken) {
+                headers['Authorization'] = `Bearer ${currentToken}`;
+            }
+            if (options.body !== undefined && options.body !== null && !headers['Content-Type']) {
+                headers['Content-Type'] = 'application/json';
+            }
+            options.headers = headers;
+            try {
+                const response = await fetch(url, options);
+                if (response.status === 401) {
+                    logout(false);
+                    throw new Error('认证已过期，请重新登录');
+                }
+                return response;
+            } catch (err) {
+                if (err.message.includes('认证已过期')) {
+                    showToast('登录已过期，请重新登录', true);
+                }
+                throw err;
+            }
+        }
+
+        // 更新UI登录状态
+        function updateAuthUI() {
+            const isLoggedIn = !!currentToken;
+            if (isLoggedIn) {
+                loggedInPanel.style.display = 'block';
+                authHint.innerHTML = '<i class="fas fa-check-circle" style="color:#22c55e;"></i> 已登录';
+                currentUsernameSpan.textContent = currentUsername || '用户';
+                tokenPreview.textContent = `Token: ${currentToken.substring(0, 20)}...`;
+                addTodoContainer.style.display = 'flex';
+            } else {
+                loggedInPanel.style.display = 'none';
+                authHint.innerHTML = '<i class="fas fa-lock"></i> 未登录';
+                addTodoContainer.style.display = 'flex';
+                todos = [];
+                renderTodos();
+            }
+        }
+
+        // 登出
+        function logout(callApi = true) {
+            currentToken = null;
+            currentUsername = null;
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('username');
+            updateAuthUI();
+            todos = [];
+            renderTodos();
+            if (callApi) showToast('已退出登录');
+        }
+
+        // ----- 渲染任务列表 -----
+        function renderTodos() {
+            if (!currentToken) {
+                todoListEl.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><span>请登录后查看任务</span></div>`;
+                return;
+            }
+            if (!todos.length) {
+                todoListEl.innerHTML = `<div class="empty-state"><i class="fas fa-clipboard-list"></i><span>还没有任务，快添加一个吧</span></div>`;
+                return;
+            }
+
+            todoListEl.innerHTML = todos.map(todo => {
+                const completed = todo.completed === 1 || todo.completed === true;
+                return `
+                    <li class="todo-item" data-id="${todo.id}">
+                        <div class="todo-check ${completed ? 'completed' : ''}" data-id="${todo.id}" data-completed="${completed}">
+                            ${completed ? '<i class="fas fa-check"></i>' : ''}
+                        </div>
+                        <div class="todo-content">
+                            <div class="todo-title ${completed ? 'completed' : ''}">${escapeHtml(todo.title)}</div>
+                        </div>
+                        <div class="todo-actions">
+                            <button class="icon-btn delete" data-id="${todo.id}" title="删除任务">
+                                <i class="fas fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+
+            document.querySelectorAll('.todo-check').forEach(el => {
+                el.addEventListener('click', async (e) => {
+                    const todoId = el.dataset.id;
+                    const isCompleted = el.dataset.completed === 'true';
+                    await toggleTodoComplete(todoId, !isCompleted);
+                });
+            });
+
+            document.querySelectorAll('.icon-btn.delete').forEach(el => {
+                el.addEventListener('click', async (e) => {
+                    const todoId = el.dataset.id;
+                    await deleteTodo(todoId);
+                });
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ----- API 调用 -----
+        async function register() {
+            const username = regUsername.value.trim();
+            const password = regPassword.value.trim();
+            if (!username || !password) {
+                showToast('请输入用户名和密码', true);
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password})
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('注册成功，请登录');
+                    regUsername.value = '';
+                    regPassword.value = '';
+                } else {
+                    showToast(data.error || '注册失败', true);
+                }
+            } catch (err) {
+                showToast('网络错误，请检查后端是否开启', true);
+            }
+        }
+
+        async function login() {
+            const username = loginUsername.value.trim();
+            const password = loginPassword.value.trim();
+            if (!username || !password) {
+                showToast('请输入用户名和密码', true);
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password})
+                });
+                const data = await res.json();
+                if (res.ok && data.token) {
+                    currentToken = data.token;
+                    currentUsername = username;
+                    localStorage.setItem('access_token', currentToken);
+                    localStorage.setItem('username', currentUsername);
+                    updateAuthUI();
+                    await fetchTodos();
+                    showToast('登录成功');
+                    loginUsername.value = '';
+                    loginPassword.value = '';
+                } else {
+                    showToast(data.error || '登录失败', true);
+                }
+            } catch (err) {
+                showToast('网络错误，请检查后端是否开启', true);
+            }
+        }
+
+        async function fetchTodos() {
+            if (!currentToken) return;
+            try {
+                const res = await authFetch(`${API_BASE}/todos`);
+                if (!res.ok) {
+                    if (res.status === 401) return;
+                    throw new Error('获取失败');
+                }
+                const data = await res.json();
+                todos = data;
+                renderTodos();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        async function addTodo() {
+            if (!currentToken) {
+                showToast('请先登录', true);
+                return;
+            }
+            const title = newTodoTitle.value.trim();
+            if (!title) {
+                showToast('任务标题不能为空', true);
+                return;
+            }
+            try {
+                const res = await authFetch(`${API_BASE}/todos`, {
+                    method: 'POST',
+                    body: JSON.stringify({title})
+                });
+                if (res.status === 201 || res.status === 200) {
+                    newTodoTitle.value = '';
+                    await fetchTodos();
+                    showToast('任务已添加');
+                } else {
+                    const err = await res.json();
+                    showToast(err.message || '添加失败', true);
+                }
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        async function toggleTodoComplete(todoId, newCompleted) {
+            if (!currentToken) return;
+            try {
+                const res = await authFetch(`${API_BASE}/todos/${todoId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ completed: newCompleted ? 1 : 0 })
+                });
+                if (res.ok) {
+                    await fetchTodos();
+                    showToast(newCompleted ? '任务已完成' : '任务已标记为未完成');
+                } else {
+                    const err = await res.json();
+                    showToast(err.error || '更新失败', true);
+                }
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        async function deleteTodo(todoId) {
+            if (!currentToken) return;
+            if (!confirm('确定要删除这个任务吗？')) return;
+            try {
+                const res = await authFetch(`${API_BASE}/todos/${todoId}`, {
+                    method: 'DELETE'
+                });
+                if (res.status === 204) {
+                    await fetchTodos();
+                    showToast('任务已删除');
+                } else {
+                    const err = await res.json();
+                    showToast(err.error || '删除失败', true);
+                }
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // ----- 初始化 & 事件绑定 -----
+        function init() {
+            if (currentToken) {
+                updateAuthUI();
+                fetchTodos().catch(() => logout(false));
+            } else {
+                updateAuthUI();
+                renderTodos();
+            }
+
+            registerBtn.addEventListener('click', register);
+            loginBtn.addEventListener('click', login);
+            logoutBtn.addEventListener('click', () => logout(true));
+            addTodoBtn.addEventListener('click', addTodo);
+            newTodoTitle.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addTodo();
+            });
+            refreshTodosBtn.addEventListener('click', () => {
+                if (!currentToken) {
+                    showToast('请先登录', true);
+                    return;
+                }
+                fetchTodos().catch(err => showToast(err.message, true));
+                showToast('刷新中...');
+            });
+            loginPassword.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') login();
+            });
+            regPassword.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') register();
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    })();
+</script>
+</body>
+</html>

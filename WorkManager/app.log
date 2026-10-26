@@ -1,0 +1,191 @@
+2026-10-26 11:41:33,522 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 11:41:33] "[31m[1mPOST /auth/login HTTP/1.1[0m" 405 -
+2026-10-26 11:44:33,069 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 11:44:33,069 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 11:44:33,072 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 11:44:33,190 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 11:44:33,199 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 11:44:43,818 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 11:44:43] "GET /index.html HTTP/1.1" 200 -
+2026-10-26 11:44:51,011 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 11:44:51] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 405 -
+2026-10-26 14:01:51,696 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:01:51] "[33mGET / HTTP/1.1[0m" 404 -
+2026-10-26 14:01:51,712 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:01:51] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2026-10-26 14:01:51,712 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:01:51] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2026-10-26 14:01:54,012 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:01:54] "[33mGET /students HTTP/1.1[0m" 404 -
+2026-10-26 14:02:08,482 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:02:08] "[33mGET /static/index.html HTTP/1.1[0m" 404 -
+2026-10-26 14:02:17,458 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:02:17] "GET /index.html HTTP/1.1" 200 -
+2026-10-26 14:02:26,363 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:02:26] "POST /api/login HTTP/1.1" 200 -
+2026-10-26 14:02:26,404 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:02:26] "[35m[1mGET /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:02:43,748 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:02:43] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:02:49,305 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:02:49] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:09:26,144 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:09:26,144 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:09:26,144 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:09:26,253 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:09:26,265 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:09:33,622 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:09:33] "GET /index.html HTTP/1.1" 200 -
+2026-10-26 14:09:33,725 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:09:33] "[35m[1mGET /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:09:48,489 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:09:48] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:11:02,407 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:11:02,407 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:11:02,407 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:11:02,522 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:11:02,533 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:11:12,475 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:11:12] "POST /api/login HTTP/1.1" 200 -
+2026-10-26 14:12:51,812 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:12:51] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:21:25,971 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:21:25,971 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:21:25,971 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:21:26,075 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:21:26,086 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:21:40,087 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:21:40] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:23:06,555 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:23:06,555 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:23:06,556 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:23:06,659 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:23:06,672 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:23:11,288 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:23:11] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:24:10,022 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:24:10,022 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:24:10,022 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:24:10,129 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:24:10,140 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:24:16,655 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:24:16] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:24:51,924 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:24:51,924 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:24:51,925 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:24:52,027 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:24:52,036 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:24:55,709 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:24:55] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:26:51,808 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:26:51,808 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:26:51,809 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:26:51,902 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:26:51,914 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:29:02,502 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:29:02,502 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:29:02,502 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:29:02,599 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:29:02,609 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:29:16,490 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:29:16] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:30:44,839 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:30:44,840 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:30:44,840 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:30:44,941 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:30:44,952 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:30:52,714 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:30:52] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:31:06,668 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:31:06,668 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:31:06,668 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:31:06,781 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:31:06,789 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:31:14,827 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:31:14] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:32:16,302 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:32:16,303 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:32:16,303 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:32:16,402 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:32:16,418 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:32:19,322 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:32:19] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:32:50,808 | INFO     | werkzeug | _internal.py:97 |  * Detected change in '/Users/Admin/PycharmProjects/WorkManager/routes/todos.py', reloading
+2026-10-26 14:32:50,836 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:32:51,188 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:32:51,212 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:32:57,885 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:32:57,885 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:32:57,886 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:32:57,989 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:32:58,001 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:33:01,353 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:33:01] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:35:59,543 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:35:59,543 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:35:59,545 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:35:59,652 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:35:59,664 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:36:03,426 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:36:03] "[35m[1mPOST /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:36:31,723 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:36:31,723 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:36:31,724 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:36:31,910 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:36:31,932 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:36:34,563 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:36:34] "[31m[1mPOST /api/todos HTTP/1.1[0m" 409 -
+2026-10-26 14:37:00,619 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:37:00] "POST /api/todos HTTP/1.1" 200 -
+2026-10-26 14:37:27,187 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:37:27] "POST /api/todos HTTP/1.1" 200 -
+2026-10-26 14:37:27,212 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:37:27] "[35m[1mGET /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:37:47,971 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:37:47] "[35m[1mGET /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:39:18,149 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:39:18,149 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:39:18,149 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:39:18,246 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:39:18,257 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:39:28,554 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:39:28] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:39:39,265 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:39:39] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:39:52,340 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:39:52] "POST /api/todos HTTP/1.1" 200 -
+2026-10-26 14:39:52,359 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:39:52] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:39:59,057 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:39:59] "[35m[1mPUT /api/todos/1 HTTP/1.1[0m" 500 -
+2026-10-26 14:40:03,061 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:40:03] "[35m[1mPUT /api/todos/1 HTTP/1.1[0m" 500 -
+2026-10-26 14:40:16,779 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:40:16] "[35m[1mDELETE /api/todos/1 HTTP/1.1[0m" 204 -
+2026-10-26 14:40:16,793 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:40:16] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:40:22,686 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:40:22] "[35m[1mPUT /api/todos/2 HTTP/1.1[0m" 500 -
+2026-10-26 14:40:41,186 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:40:41] "[35m[1mPUT /api/todos/2 HTTP/1.1[0m" 500 -
+2026-10-26 14:44:25,728 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:44:25] "[35m[1mPUT /api/todos/2 HTTP/1.1[0m" 500 -
+2026-10-26 14:49:03,925 | INFO     | werkzeug | _internal.py:97 |  * Detected change in '/Users/Admin/PycharmProjects/WorkManager/routes/todos.py', reloading
+2026-10-26 14:49:03,964 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:49:04,254 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:49:04,265 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:49:59,248 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 14:49:59,249 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 14:49:59,249 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 14:49:59,352 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 14:49:59,370 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 14:50:06,317 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:06] "PUT /api/todos/2 HTTP/1.1" 200 -
+2026-10-26 14:50:06,339 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:06] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:50:08,519 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:08] "PUT /api/todos/2 HTTP/1.1" 200 -
+2026-10-26 14:50:08,529 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:08] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:50:09,974 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:09] "PUT /api/todos/3 HTTP/1.1" 200 -
+2026-10-26 14:50:09,989 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:09] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:50:11,205 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:11] "PUT /api/todos/3 HTTP/1.1" 200 -
+2026-10-26 14:50:11,218 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:11] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:50:17,721 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:17] "PUT /api/todos/2 HTTP/1.1" 200 -
+2026-10-26 14:50:17,732 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:50:17] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 14:51:26,467 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:51:26] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
+2026-10-26 14:51:45,984 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:51:45] "POST /api/login HTTP/1.1" 200 -
+2026-10-26 14:51:46,066 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:51:46] "[35m[1mGET /api/todos HTTP/1.1[0m" 500 -
+2026-10-26 14:51:55,973 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:51:55] "POST /api/todos HTTP/1.1" 200 -
+2026-10-26 14:51:55,984 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 14:51:55] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 15:43:56,395 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 15:43:56,396 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 15:43:56,396 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 15:43:56,531 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 15:43:56,546 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 15:44:00,521 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:44:00] "GET /index.html HTTP/1.1" 200 -
+2026-10-26 15:44:00,841 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:44:00] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 15:44:18,089 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:44:18] "POST /api/login HTTP/1.1" 200 -
+2026-10-26 15:44:18,108 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:44:18] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 15:44:19,784 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:44:19] "PUT /api/todos/3 HTTP/1.1" 200 -
+2026-10-26 15:44:19,793 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:44:19] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 15:44:21,012 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:44:21] "PUT /api/todos/4 HTTP/1.1" 200 -
+2026-10-26 15:44:21,023 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:44:21] "GET /api/todos HTTP/1.1" 200 -
+2026-10-26 15:53:45,006 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-26 15:53:45,006 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-10-26 15:53:45,006 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-10-26 15:53:45,129 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-10-26 15:53:45,142 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 247-121-213
+2026-10-26 15:53:47,142 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:53:47] "GET /index.html HTTP/1.1" 200 -
+2026-10-26 15:53:47,332 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [26/Oct/2026 15:53:47] "GET /api/todos HTTP/1.1" 200 -
