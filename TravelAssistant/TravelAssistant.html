@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>旅行助手 Agent</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">🧳</div>
+        <div class="brand-text">
+          <h1>旅行助手 Agent</h1>
+          <p>实时天气 · 智能景点推荐</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button id="clearBtn" class="ghost-btn" title="清空对话">清空</button>
+        <button id="settingsBtn" class="ghost-btn" title="设置">⚙️ 设置</button>
+      </div>
+    </header>
+
+    <main id="chat" class="chat">
+      <div class="welcome">
+        <div class="welcome-emoji">✈️</div>
+        <h2>你好，我是你的旅行助手</h2>
+        <p>告诉我你想去的地方，我会帮你查天气、找景点。</p>
+        <div class="suggestions">
+          <button class="chip">帮我查一下今天成都的天气，并推荐一个合适的景点</button>
+          <button class="chip">北京今天天气怎么样？适合去哪里玩？</button>
+          <button class="chip">周末想去杭州，帮我看看天气和景点</button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="composer">
+      <textarea id="input" rows="1" placeholder="输入你的旅行问题…（Enter 发送 / Shift+Enter 换行）"></textarea>
+      <button id="sendBtn">发送</button>
+    </footer>
+  </div>
+
+  <!-- 设置弹窗 -->
+  <div class="modal hidden" id="settingsModal">
+    <div class="modal-card">
+      <h3>⚙️ 设置</h3>
+      <p class="hint">密钥只保存在你本机浏览器的 localStorage 中，随请求发送给本机后端，不会上传到第三方。</p>
+
+      <label>
+        <span>https://api.deepseek.com</span>
+        <input id="cfgBaseUrl" type="text" placeholder="https://api.deepseek.com" />
+      </label>
+      <label>
+        <span>deepseek-chat</span>
+        <input id="cfgModel" type="text" placeholder="deepseek-chat" />
+      </label>
+      <label>
+        <span>s</span>
+        <input id="cfgApiKey" type="password" placeholder="sk-..." autocomplete="off" />
+      </label>
+      <label>
+        <span>tavily API Key (可选)</span>
+        <input id="cfgTavilyKey" type="password" placeholder="tvly-..." autocomplete="off" />
+      </label>
+
+      <div class="modal-actions">
+        <button id="cancelBtn" class="ghost-btn">取消</button>
+        <button id="saveBtn" class="primary-btn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

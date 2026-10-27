@@ -1,17 +1,12 @@
-import os
+
 import re
 
 from TravelAssistant.OpenAICompatibleClient import OpenAICompatibleClient
 from TravelAssistant.available_tools import available_tools
 from TravelAssistant.system_prompt import AGENT_SYSTEM_PROMPT
 
-# --- 1. 配置LLM客户端 ---
-# 请根据您使用的服务，将这里替换成对应的凭证和地址
-API_KEY = "YOUR_API_KEY"
-BASE_URL = "YOUR_BASE_URL"
-MODEL_ID = "YOUR_MODEL_ID"
-TAVILY_API_KEY = "YOUR_Tavily_KEY"
-os.environ['TAVILY_API_KEY'] = "YOUR_TAVILY_API_KEY"
+
+
 
 # main.py 中的修改
 client = OpenAICompatibleClient(

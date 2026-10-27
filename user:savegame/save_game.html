@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我的世界 · 游戏存档</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%236b4a2b'/%3E%3Crect width='16' height='5' fill='%237cbb3d'/%3E%3Crect y='4' width='16' height='1' fill='%235a8f2c'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;700;900&display=swap">
+<style>
+/* ============================================================
+   我的世界风格 · 游戏存档系统
+   纯前端单文件：CSS 像素纹理 / 像素 SVG 图标 / 本地存档
+   ============================================================ */
+
+/* ---------- 0. 基础变量 ---------- */
+:root{
+  --dirt:        #6b4a2b;
+  --dirt-dark:   #4a321e;
+  --grass:       #7cbb3d;
+  --grass-dark:  #5a8f2c;
+  --stone:       #6f6f6f;
+  --stone-light: #9a9a9a;
+  --stone-dark:  #4c4c4c;
+  --panel:       rgba(0,0,0,.68);
+  --panel-edge:  #1a1a1a;
+  --mc-green:    #5db83a;
+  --mc-green-hi: #8ee05f;
+  --gold:        #ffc832;
+  --red:         #f02a2a;
+  --mana:        #3a9bff;
+  --xp:          #7fff3c;
+  --ink:         #ffffff;
+  --font-px:     'Press Start 2P','Noto Sans SC',monospace;
+  --font-cn:     'Noto Sans SC','Press Start 2P',sans-serif;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+html,body{ height:100%; }
+
+body{
+  font-family:var(--font-cn);
+  font-weight:700;
+  color:var(--ink);
+  overflow-x:hidden;
+  /* 16x16 像素泥土纹理：硬边颗粒 + 底色，平铺后缓慢滚动 */
+  background-color:#5b3f25;
+  background-image:
+    radial-gradient(circle at 3px 4px,  rgba(0,0,0,.28) 1px, transparent 1.6px),
+    radial-gradient(circle at 11px 2px, rgba(255,255,255,.08) 1px, transparent 1.6px),
+    radial-gradient(circle at 7px 9px,  rgba(0,0,0,.30) 1px, transparent 1.6px),
+    radial-gradient(circle at 14px 12px,rgba(255,255,255,.06) 1px, transparent 1.6px),
+    radial-gradient(circle at 2px 14px, rgba(0,0,0,.22) 1px, transparent 1.6px),
+    radial-gradient(circle at 9px 6px,  rgba(255,255,255,.09) 1px, transparent 1.6px),
+    radial-gradient(circle at 5px 11px, rgba(0,0,0,.20) 1px, transparent 1.6px),
+    radial-gradient(circle at 13px 6px, rgba(0,0,0,.16) 1px, transparent 1.6px),
+    linear-gradient(#795434,#6b4a2b);
+  background-size:16px 16px;
+  animation:dirtScroll 22s linear infinite;
+}
+@keyframes dirtScroll{
+  from{ background-position:0 0; }
+  to  { background-position:160px 160px; }
+}
+
+/* 暗角 */
+body::before{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+
+svg,img,canvas{ display:block; image-rendering:pixelated; image-rendering:crisp-edges; }
+.px{ width:100%; height:100%; }
+
+button{ font-family:inherit; cursor:pointer; }
+
+/* ---------- 1. 屏幕切换 ---------- */
+.screen{
+  position:relative; z-index:1;
+  display:none;
+  min-height:100vh;
+  width:100%;
+}
+.screen.show{ display:flex; }
+.screen--title{ flex-direction:column; align-items:center; justify-content:center; gap:34px; padding:24px; }
+.screen--menu { flex-direction:column; align-items:center; justify-content:flex-start; padding:28px 16px 40px; }
+.screen--game { flex-direction:column; padding:12px; gap:10px; }
+
+/* ---------- 2. MC 石质按钮 ---------- */
+.mc-btn{
+  position:relative;
+  min-height:48px;
+  padding:12px 18px;
+  font-family:var(--font-cn);
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:1px;
+  color:#e8e8e8;
+  text-shadow:2px 2px 0 #3f3f3f;
+  background-color:var(--stone);
+  background-image:
+    radial-gradient(circle at 4px 5px,  rgba(255,255,255,.10) 1px, transparent 1.6px),
+    radial-gradient(circle at 12px 10px,rgba(0,0,0,.18) 1px, transparent 1.6px),
+    radial-gradient(circle at 8px 14px, rgba(255,255,255,.07) 1px, transparent 1.6px),
+    linear-gradient(#7a7a7a,#6a6a6a);
+  background-size:16px 16px,16px 16px,16px 16px,100% 100%;
+  border:2px solid #0c0c0c;
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,.28),
+    inset -2px -2px 0 rgba(0,0,0,.40);
+  transition:filter .05s;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  user-select:none;
+}
+.mc-btn::after{
+  content:''; position:absolute; inset:0;
+  background:rgba(94,184,58,.45);
+  border:2px solid rgba(255,255,255,.9);
+  opacity:0; transition:opacity .05s;
+}
+.mc-btn:hover:not(:disabled){ color:#fff; }
+.mc-btn:hover:not(:disabled)::after{ opacity:1; }
+.mc-btn:active:not(:disabled){
+  box-shadow:
+    inset 2px 2px 0 rgba(0,0,0,.42),
+    inset -2px -2px 0 rgba(255,255,255,.14);
+}
+.mc-btn:active:not(:disabled)::after{ background:rgba(94,184,58,.30); }
+.mc-btn:disabled{
+  color:#474747; text-shadow:none;
+  background:#6a6a6a;
+  cursor:not-allowed;
+}
+.mc-btn:disabled::after{ display:none; }
+.mc-btn .px{ width:18px; height:18px; position:relative; z-index:1; }
+.mc-btn > span{ position:relative; z-index:1; }
+.mc-btn.danger:hover:not(:disabled)::after{ background:rgba(200,40,40,.5); }
+.mc-btn.confirm{
+  background-color:#8a3a3a;
+  background-image:linear-gradient(#9a4444,#7a2f2f);
+}
+
+/* ---------- 3. 标题画面 ---------- */
+.title-block{ position:relative; text-align:center; }
+.logo-block{
+  width:96px; height:96px; margin:0 auto 18px;
+  image-rendering:pixelated;
+  animation:floaty 3s ease-in-out infinite;
+}
+@keyframes floaty{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+.mc-logo{
+  font-family:var(--font-cn);
+  font-weight:900;
+  font-size:clamp(44px,10vw,84px);
+  letter-spacing:8px;
+  color:#e6e6e6;
+  text-shadow:
+    3px 3px 0 #3c3c3c,
+    6px 6px 0 #262626,
+    -2px -2px 0 #1a1a1a,
+    2px -2px 0 #1a1a1a,
+    -2px 2px 0 #1a1a1a,
+    8px 10px 0 rgba(0,0,0,.45);
+}
+.logo-sub{
+  margin-top:14px;
+  font-family:var(--font-px);
+  font-size:clamp(11px,2.4vw,16px);
+  color:#cfcfcf;
+  text-shadow:2px 2px 0 #2a2a2a;
+  letter-spacing:2px;
+}
+.splash{
+  position:absolute;
+  right:-34px; top:44px;
+  font-family:var(--font-px);
+  font-size:clamp(13px,2.6vw,20px);
+  color:#ff0;
+  text-shadow:2px 2px 0 #6b6300;
+  transform:rotate(-12deg);
+  animation:splashWobble .5s steps(2) infinite;
+  pointer-events:none;
+}
+@keyframes splashWobble{
+  0%  { transform:rotate(-12deg) scale(1); }
+  50% { transform:rotate(-9deg)  scale(1.06); }
+  100%{ transform:rotate(-12deg) scale(1); }
+}
+
+.title-deco{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.title-deco .deco-item{ position:absolute; opacity:.85; }
+.title-deco .deco-item .px{ width:100%; height:100%; }
+
+.enter-btn{
+  font-size:18px; min-width:280px; min-height:60px;
+  animation:btnPulse 1.4s ease-in-out infinite;
+}
+@keyframes btnPulse{ 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.25)} }
+.blink{ animation:blink 1s steps(1) infinite; }
+@keyframes blink{ 50%{ opacity:.25; } }
+
+.title-foot{
+  position:absolute; bottom:18px;
+  font-family:var(--font-px);
+  font-size:9px; color:#bdbdbd;
+  text-shadow:1px 1px 0 #000;
+  text-align:center; line-height:1.9;
+}
+
+/* ---------- 4. 菜单面板与存档槽位 ---------- */
+.menu-wrap{ width:100%; max-width:700px; }
+
+.panel-title{
+  font-family:var(--font-cn);
+  font-weight:900;
+  font-size:24px; letter-spacing:4px;
+  text-align:center;
+  color:#e8e8e8;
+  text-shadow:3px 3px 0 #2b2b2b;
+  padding:14px 0 18px;
+}
+
+.slot-list{ display:flex; flex-direction:column; gap:10px; }
+
+.slot{
+  position:relative;
+  display:flex; align-items:center; gap:14px;
+  width:100%;
+  padding:12px 14px;
+  text-align:left;
+  color:#fff;
+  background:rgba(0,0,0,.55);
+  border:2px solid #0a0a0a;
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,.10),
+    inset -2px -2px 0 rgba(0,0,0,.45);
+  transition:background .05s;
+}
+.slot:hover, .slot.active{
+  background:rgba(94,184,58,.28);
+  border-color:#d8ffd0;
+}
+.slot.active{ box-shadow:inset 0 0 0 2px rgba(142,224,95,.55); }
+.slot.empty{ background:rgba(0,0,0,.35); }
+
+.slot-icon{
+  flex:0 0 auto;
+  width:64px; height:64px;
+  border:2px solid #000;
+  background:#454545;
+  box-shadow:inset 2px 2px 0 rgba(0,0,0,.5), inset -2px -2px 0 rgba(255,255,255,.15);
+  display:flex; align-items:center; justify-content:center;
+}
+.slot.empty .slot-icon{
+  background:rgba(255,255,255,.06);
+  border-style:dashed;
+  border-color:#6a6a6a;
+  box-shadow:none;
+}
+.slot-icon .px{ width:52px; height:52px; }
+
+.slot-info{ flex:1 1 auto; min-width:0; }
+.slot-name{
+  display:flex; align-items:center; gap:10px;
+  font-weight:900; font-size:18px; letter-spacing:1px;
+  text-shadow:2px 2px 0 #1f1f1f;
+}
+.ver-badge{
+  font-family:var(--font-px); font-size:8px;
+  color:#fff; background:#3f7a26;
+  padding:3px 5px; border:1px solid #000;
+  text-shadow:none;
+}
+.slot-time{
+  font-size:12px; color:#bdbdbd; margin-top:5px;
+  font-family:var(--font-px);
+  line-height:1.7;
+}
+.slot-stats{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:7px; font-size:13px; font-weight:900;
+}
+.slot-stats .chip{ display:inline-flex; align-items:center; gap:4px; text-shadow:1px 1px 0 #111; }
+.slot-stats .chip .px{ width:14px; height:14px; }
+.slot-empty-text{ color:#8a8a8a; font-size:14px; letter-spacing:2px; }
+
+.slot-items{ flex:0 0 auto; display:flex; gap:4px; }
+.slot-items .mini-cell{
+  width:30px; height:30px;
+  background:#6d6d6d;
+  border:2px solid #000;
+  box-shadow:inset 2px 2px 0 rgba(0,0,0,.4), inset -2px -2px 0 rgba(255,255,255,.15);
+  display:flex; align-items:center; justify-content:center;
+}
+.slot-items .mini-cell .px{ width:20px; height:20px; }
+
+.btn-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+.menu-hint{
+  text-align:center; margin-top:16px;
+  font-family:var(--font-px); font-size:9px;
+  color:#bdbdbd; line-height:2; text-shadow:1px 1px 0 #000;
+}
+
+/* ---------- 5. 游戏内 HUD ---------- */
+.game-top{
+  display:flex; justify-content:space-between; align-items:center;
+  width:100%; max-width:780px; margin:0 auto;
+}
+.icon-btn{ min-width:52px; padding:10px; }
+.icon-btn .px{ width:22px; height:22px; }
+
+.hud{
+  width:100%; max-width:780px; margin:0 auto;
+  background:rgba(0,0,0,.35);
+  border:2px solid #000;
+  padding:10px 12px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.hud-title{
+  font-family:var(--font-px); font-size:10px; color:#cfcfcf;
+  text-shadow:1px 1px 0 #000;
+}
+.hearts{ display:flex; gap:1px; }
+.heart{
+  position:relative;
+  width:22px; height:19px;
+  display:inline-block;
+}
+.heart .px{ width:100%; height:100%; }
+.heart .h-fill{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  clip-path:inset(0 50% 0 0);
+}
+.hud-stats{ display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
+.stat{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-px); font-size:12px;
+  text-shadow:2px 2px 0 #111;
+}
+.stat .px{ width:18px; height:18px; }
+.stat.mana{ color:#bfe0ff; }
+.stat.gold{ color:var(--gold); }
+.stat.lvl{ color:var(--xp); }
+.mana-bar{
+  width:120px; height:12px;
+  background:#1d2a3a; border:2px solid #000;
+  box-shadow:inset 1px 1px 0 rgba(0,0,0,.6);
+  position:relative;
+}
+.mana-bar i{
+  display:block; height:100%;
+  background:linear-gradient(#5fb6ff,#2f7de0);
+}
+
+/* ---------- 6. 日志框 ---------- */
+.log-box{
+  width:100%; max-width:780px; margin:0 auto;
+  flex:1; min-height:140px;
+  background:rgba(0,0,0,.45);
+  border:2px solid #000;
+  padding:10px 12px;
+  overflow:hidden;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  gap:4px;
+}
+.log-line{
+  font-size:13px; font-weight:700;
+  color:#f1f1f1;
+  text-shadow:1px 1px 0 #000;
+  line-height:1.5;
+}
+.log-line .t{ color:#9c9c9c; font-family:var(--font-px); font-size:9px; margin-right:6px; }
+.log-line.hurt{ color:#ff8a8a; }
+.log-line.loot{ color:#a7ff9c; }
+.log-line.gold{ color:var(--gold); }
+.log-line.sys{ color:#9fd4ff; }
+.log-line.death{ color:#ff5a5a; font-weight:900; }
+
+/* ---------- 7. 游戏内操作按钮 ---------- */
+.game-actions{
+  width:100%; max-width:780px; margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.game-actions .span2{ grid-column:span 2; }
+
+/* ---------- 8. 经验条与快捷栏 ---------- */
+.hotbar-wrap{ width:100%; max-width:780px; margin:0 auto; }
+
+.xp-bar{
+  position:relative;
+  height:10px;
+  background:#1d2a14;
+  border:2px solid #000;
+  margin-bottom:8px;
+  box-shadow:inset 1px 1px 0 rgba(0,0,0,.7);
+}
+.xp-fill{
+  height:100%; width:0%;
+  background:linear-gradient(#a7ff63,#54c41f);
+}
+.xp-num{
+  position:absolute; left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  font-family:var(--font-px); font-size:10px;
+  color:#b6ff5a; text-shadow:2px 2px 0 #1a3300;
+}
+
+.hotbar{
+  display:grid;
+  grid-template-columns:repeat(9,1fr);
+  gap:0;
+  border:2px solid #1a1a1a;
+  background:#1a1a1a;
+  width:100%;
+}
+.cell{
+  position:relative;
+  aspect-ratio:1/1;
+  background:#8b8b8b;
+  background-image:
+    radial-gradient(circle at 3px 3px, rgba(255,255,255,.10) 1px, transparent 1.6px),
+    radial-gradient(circle at 8px 7px, rgba(0,0,0,.18) 1px, transparent 1.6px);
+  background-size:14px 14px;
+  border:2px solid;
+  border-color:#555 #dadada #dadada #555;
+  display:flex; align-items:center; justify-content:center;
+}
+.cell .px{ width:62%; height:62%; }
+.cell.selected{
+  outline:3px solid #fff;
+  outline-offset:-1px;
+  z-index:2;
+}
+.cell .count{
+  position:absolute; right:2px; bottom:0;
+  font-family:var(--font-px); font-size:10px;
+  color:#fff; text-shadow:2px 2px 0 #000;
+}
+.cell.empty-cell{ background:#7a7a7a; }
+
+/* ---------- 9. 成就 / 提示弹窗 ---------- */
+.toast-stack{
+  position:fixed; top:14px; right:14px;
+  z-index:50;
+  display:flex; flex-direction:column; gap:10px;
+  pointer-events:none;
+}
+.toast{
+  display:flex; align-items:center; gap:12px;
+  min-width:260px; max-width:340px;
+  padding:10px 14px;
+  background:rgba(16,16,16,.94);
+  border:2px solid #555;
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.12), 4px 4px 0 rgba(0,0,0,.45);
+  transform:translateX(130%);
+  animation:toastIn .35s steps(4) forwards;
+}
+.toast.out{ animation:toastOut .3s steps(4) forwards; }
+@keyframes toastIn{ to{ transform:translateX(0); } }
+@keyframes toastOut{ to{ transform:translateX(130%); } }
+.toast .px{ width:34px; height:34px; flex:0 0 auto; }
+.toast .t-cat{
+  font-family:var(--font-px); font-size:9px; color:var(--gold);
+  text-shadow:1px 1px 0 #000;
+  margin-bottom:5px;
+}
+.toast .t-name{
+  font-size:15px; font-weight:900; color:#fff;
+  text-shadow:1px 1px 0 #000;
+}
+.toast.bad .t-cat{ color:#ff7a7a; }
+.toast.good .t-cat{ color:#a7ff9c; }
+
+/* ---------- 10. 响应式 ---------- */
+@media (max-width:640px){
+  .mc-logo{ letter-spacing:4px; }
+  .splash{ right:0; }
+  .slot{ flex-wrap:wrap; gap:10px; }
+  .slot-items{ width:100%; justify-content:flex-end; }
+  .btn-grid{ grid-template-columns:1fr 1fr; }
+  .game-actions{ grid-template-columns:1fr 1fr; }
+  .game-actions .span2{ grid-column:span 2; }
+  .heart{ width:17px; height:15px; }
+  .mana-bar{ width:84px; }
+  .stat{ font-size:10px; }
+  .hud-stats{ gap:10px; }
+  .toast{ min-width:0; max-width:calc(100vw - 28px); }
+  .enter-btn{ min-width:230px; }
+  .title-deco{ display:none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  body{ animation:none; }
+  .logo-block,.splash,.enter-btn{ animation:none; }
+  .toast{ animation-duration:.01s; }
+}
+
+</style>
+</head>
+<body>
+<!-- ================= 视图 1：标题画面 ================= -->
+<div id="screen-title" class="screen screen--title show">
+  <div class="title-deco" id="titleDeco" aria-hidden="true"></div>
+  <div class="title-block">
+    <div class="logo-block" id="logoBlock"></div>
+    <h1 class="mc-logo">我的世界</h1>
+    <div class="logo-sub">游戏存档系统 · SAVE GAME</div>
+    <div class="splash" id="splash">存档 v2.0!</div>
+  </div>
+  <button class="mc-btn enter-btn" id="enterBtn"><span>点击进入游戏</span></button>
+  <div class="title-foot">纯前端演示 · 存档保存在浏览器本地<br>连接 Flask 后可一键云同步</div>
+</div>
+
+<!-- ================= 视图 2：选择存档 ================= -->
+<div id="screen-menu" class="screen screen--menu">
+  <div class="menu-wrap">
+    <h2 class="panel-title">选择存档</h2>
+    <div class="slot-list" id="slotList"></div>
+    <div class="btn-grid">
+      <button class="mc-btn" id="btnPlay"><span>进入游戏</span></button>
+      <button class="mc-btn" id="btnNew"><span>新建存档</span></button>
+      <button class="mc-btn" id="btnCloud"><span>云同步存档</span></button>
+      <button class="mc-btn danger" id="btnDelete"><span>删除存档</span></button>
+    </div>
+    <p class="menu-hint">↑ ↓ 选择存档 · ENTER 进入 · ESC 返回标题<br>存档格式 v2 · 自动升级旧存档</p>
+  </div>
+</div>
+
+<!-- ================= 视图 3：游戏内 ================= -->
+<div id="screen-game" class="screen screen--game">
+  <div class="game-top">
+    <button class="mc-btn icon-btn" id="btnBack" title="返回主菜单（自动保存到本地）"><span id="backLabel">返回</span></button>
+    <div class="hud-title" id="gameTitle">世界 1</div>
+    <button class="mc-btn icon-btn" id="btnMute" title="开关音效"></button>
+  </div>
+
+  <div class="hud">
+    <div class="hearts" id="hudHearts"></div>
+    <div class="hud-stats">
+      <span class="stat mana">
+        <span class="mana-bar"><i id="manaFill"></i></span>
+        <span id="manaText">0/100</span>
+      </span>
+      <span class="stat gold"><span id="coinIcon"></span><span id="goldText">0</span></span>
+      <span class="stat lvl"><span>LV.</span><span id="lvlText">1</span></span>
+    </div>
+  </div>
+
+  <div class="log-box" id="logBox"></div>
+
+  <div class="game-actions">
+    <button class="mc-btn" id="actFight"><span>战斗</span></button>
+    <button class="mc-btn" id="actPotion"><span>喝药水</span></button>
+    <button class="mc-btn" id="actLoot"><span>拾取物品</span></button>
+    <button class="mc-btn" id="actRest"><span>休息</span></button>
+    <button class="mc-btn span2" id="btnSave" style="grid-column:1 / -1"><span>保存进度（本地 + 云同步）</span></button>
+  </div>
+
+  <div class="hotbar-wrap">
+    <div class="xp-bar"><div class="xp-fill" id="xpFill"></div><span class="xp-num" id="xpNum">1</span></div>
+    <div class="hotbar" id="hotbar"></div>
+  </div>
+</div>
+
+<!-- 成就 / 系统提示 -->
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+/* ============================================================
+   1. 像素精灵：用字符矩阵 + 调色板生成 SVG，无需任何图片
+   ============================================================ */
+const SPRITES = {
+  grass:{ w:16,h:16,m:[
+    'GGGGGGGGGGGGGGGG',
+    'GgGGgGGGGgGGGGgG',
+    'GGGGGGGGGGGGGGGG',
+    'GGgGGGGgGGGGgGGG',
+    'DGGDDGGDDDGGDDGG',
+    'DDDDDDDDDDDDDDDD',
+    'DdDDlDDDDdDDlDDD',
+    'DDDdDDDDDDlDDDDD',
+    'DlDDDDdDDDDDDlDD',
+    'DDDlDDDDDDdDDDDD',
+    'DdDDDDlDDDDDDdDD',
+    'DDlDDDDDdDDDDDDD',
+    'DDDDdDDDDlDDDDdD',
+    'DdDDDDDDDDdDDDDD',
+    'DDDlDDdDDDDDDlDD',
+    'DDDDDDDDDDDDDDDD'] },
+  heart:{ w:7,h:6,m:[
+    '.RR.RR.',
+    'RWRRRRR',
+    'RRRRRRR',
+    '.RRRRR.',
+    '..RRR..',
+    '...R...'] },
+  coin:{ w:8,h:8,m:[
+    '..CCCC..',
+    '.CyyyyC.',
+    'CyyllyyC',
+    'CylyyyyC',
+    'CyyyylyC',
+    'CyyllyyC',
+    '.CyyyyC.',
+    '..CCCC..'] },
+  diamond:{ w:10,h:8,m:[
+    '..DDDDDD..',
+    '.DddddddD.',
+    'DdcddddddD',
+    'DddddddddD',
+    '.DddddddD.',
+    '..DddddD..',
+    '...DddD...',
+    '....DD....'] },
+  bluegem:{ w:16,h:9,m:[
+    '......BBBB......',
+    '.....BllBB......',
+    '....BLLLLB......',
+    '...BLllllLB.....',
+    '..BLLLLLLLLB....',
+    '...BLLLLLLB.....',
+    '....BLLLLB......',
+    '.....BLLB.......',
+    '......BB........'] },
+  potion:{ w:16,h:12,m:[
+    '......KK........',
+    '......KK........',
+    '......GG........',
+    '......G.G.......',
+    '.....GRRRG......',
+    '....GRRRRRG.....',
+    '...GRRRRRRRG....',
+    '...GRRWRRRRRG...',
+    '...GRRRRRRRG....',
+    '...GRRRRRRRG....',
+    '....GRRRRRG.....',
+    '.....GGGGG......'] },
+  sword:{ w:16,h:16,m:[
+    '.............IA.',
+    '............IA..',
+    '...........IA...',
+    '..........IA....',
+    '.........IA.....',
+    '........IA......',
+    '.......IA.......',
+    '......IA........',
+    '.....IA.........',
+    '....IA..........',
+    '...IA...........',
+    '..IA............',
+    '.IA.............',
+    'SSS.............',
+    '.K..............',
+    '.K..............'] },
+  shield:{ w:16,h:15,m:[
+    '....AAAAAA......',
+    '...AaaaaaaA.....',
+    '..AaaaaaaaaA....',
+    '.AaaaaaaaaaaA...',
+    '.AaaaDDDDaaaA...',
+    '.AaaaDddDaaaA...',
+    '.AaaaDddDaaaA...',
+    '.AaaaDDDDaaaA...',
+    '.AaaaaaaaaaaA...',
+    '.AaaaaaaaaaaA...',
+    '..AaaaaaaaaA....',
+    '...AaaaaaaA.....',
+    '....AaaaaA......',
+    '.....AaaA.......',
+    '......AA........'] },
+  bread:{ w:16,h:10,m:[
+    '.....OOOOO......',
+    '...OOOOOOOOO....',
+    '..OOOOOOOOOOO...',
+    '.OOOOOOOOOOOOO..',
+    '.OOOOllOOOOOOO..',
+    '.OOOllOOOOOOOO..',
+    '.OOOOOOOOOOOOO..',
+    '..OOOOOOOOOOO...',
+    '...OOOOOOOOO....',
+    '.....OOOOO......'] },
+  torch:{ w:16,h:15,m:[
+    '.......YY.......',
+    '......YyyY......',
+    '.......Yy.......',
+    '.......BB.......',
+    '.......bB.......',
+    '.......Bb.......',
+    '.......bB.......',
+    '.......Bb.......',
+    '.......bB.......',
+    '.......Bb.......',
+    '.......bB.......',
+    '.......Bb.......',
+    '.......bB.......',
+    '.......Bb.......',
+    '.......bB.......'] },
+  ingot:{ w:16,h:10,m:[
+    '................',
+    '....CCCCCCCC....',
+    '..CCyyyyyyyyCC..',
+    '.CyyyyyyyyyyyyC.',
+    'CyyyyyyyyyyyyyyC',
+    'CyyyyyyyyyyyyyyC',
+    '.CyyyyyyyyyyyyC.',
+    '..CCyyyyyyyyCC..',
+    '....CCCCCCCC....',
+    '................'] },
+  speaker:{ w:16,h:9,m:[
+    '....BBB.........',
+    '....BBBB........',
+    '....BBBBBBB.....',
+    'BBBBBBBBBBwB....',
+    'BBBBBBBBBwwB....',
+    'BBBBBBBBBBwB....',
+    '....BBBBBBB.....',
+    '....BBBB........',
+    '....BBB.........'] },
+  mute:{ w:16,h:9,m:[
+    '....BBB.....X...',
+    '....BBBB...X....',
+    '....BBBBBBBX....',
+    'BBBBBBBBBBXB....',
+    'BBBBBBBBBXXB....',
+    'BBBBBBBBBBXB....',
+    '....BBBBBBBX....',
+    '....BBBB...X....',
+    '....BBB.....X...'] }
+};
+
+const PALETTES = {
+  grass:  { G:'#7cbb3d', g:'#5f9c2f', D:'#805533', d:'#6b4423', l:'#96683c' },
+  heart:  { R:'#f02a2a', W:'#ffd9d9' },
+  coin:   { C:'#b8860b', y:'#ffc832', l:'#ffe88a' },
+  diamond:{ D:'#2a8f9c', d:'#4fd4de', c:'#e8ffff' },
+  bluegem:{ B:'#1f6fd0', L:'#57a6ff', l:'#cfe8ff' },
+  potion: { K:'#8b5a2b', G:'#c9e4ff', R:'#e23b3b', W:'#ffb3b3' },
+  sword:  { I:'#e4e4e4', A:'#a8a8a8', S:'#cfcfcf', K:'#6b4423' },
+  shield: { A:'#4a3018', a:'#8b5a2b', D:'#cfcfcf', d:'#f0f0f0' },
+  bread:  { O:'#c98a4b', l:'#8a5424' },
+  torch:  { Y:'#ffcc00', y:'#ff7b00', B:'#6b4423', b:'#8b5a2b' },
+  ingot:  { C:'#c9950c', y:'#ffd84d' },
+  speaker:{ B:'#e0e0e0', w:'#b0b0b0' },
+  mute:   { B:'#e0e0e0', w:'#b0b0b0', X:'#ff5a5a' }
+};
+
+function svg(matrix, w, h, colors, cls){
+  let r = '';
+  for(let y=0; y<matrix.length; y++){
+    for(let x=0; x<matrix[y].length; x++){
+      const ch = matrix[y][x];
+      if(ch === '.' || ch === ' ') continue;
+      const c = colors[ch] || '#ff00ff';
+      r += '<rect x="'+x+'" y="'+y+'" width="1.02" height="1.02" fill="'+c+'"/>';
+    }
+  }
+  return '<svg class="px '+(cls||'')+'" viewBox="0 0 '+w+' '+h+'" shape-rendering="crispEdges" preserveAspectRatio="xMidYMid meet">'+r+'</svg>';
+}
+function sprite(name, override){
+  const s = SPRITES[name];
+  const colors = Object.assign({}, PALETTES[name], override);
+  return svg(s.m, s.w, s.h, colors, 'sp-'+name);
+}
+
+/* ============================================================
+   2. 全局状态与存档系统（与 Flask 版 SaveGame 对齐）
+   ============================================================ */
+const STORE_PREFIX = 'mc_save_slot_';
+const CURRENT_SAVE_VERSION = 2;
+const CLOUD_URL = '/game/save';
+const SEED_KEY = 'mc_seeded';
+
+let slots = [null, null, null];   // 三个存档槽位
+let selected = 0;                 // 当前选中槽位
+let game = null;                  // 游戏内：{ slot, data }
+let logs = [];
+let muted = false;
+let audioCtx = null;
+let deleteArmed = false, deleteTimer = null;
+
+const ITEM_ICON = { 药水:'potion', 铁剑:'sword', 盾牌:'shield', 面包:'bread', 火把:'torch', 钻石:'diamond', 金锭:'ingot' };
+function itemIcon(name){ return sprite(ITEM_ICON[name] || 'potion'); }
+
+function fmtTime(d){
+  const p = n => String(n).padStart(2,'0');
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+
+         p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+}
+function hhmm(d){
+  const p = n => String(n).padStart(2,'0');
+  return p(d.getHours())+':'+p(d.getMinutes());
+}
+
+function defaultNewGame(){
+  return { version:2, level:1, hp:100, gold:0, mp:50, exp:0, inventory:[], save_time:null };
+}
+function demoGame(){   // 对应 Flask 后端 /game/save 里的测试数据
+  return { version:2, level:5, hp:88, gold:1200, mp:70, exp:40,
+           inventory:['药水','铁剑','盾牌'], save_time:fmtTime(new Date()) };
+}
+
+function migrate(data){
+  const v = data.version || 1;
+  if(v < CURRENT_SAVE_VERSION){
+    if(typeof data.mp !== 'number') data.mp = 50;
+    data.version = CURRENT_SAVE_VERSION;
+    toast('good','存档迁移','旧存档 v'+v+' 已自动升级到 v'+CURRENT_SAVE_VERSION,'bluegem');
+  }
+  if(typeof data.exp !== 'number') data.exp = 0;
+  if(!Array.isArray(data.inventory)) data.inventory = [];
+  ['level','hp','gold','mp'].forEach(k=>{
+    if(typeof data[k] !== 'number') data[k] = k === 'level' ? 1 : (k === 'hp' ? 100 : 0);
+  });
+  return data;
+}
+function persist(){
+  slots.forEach((d,i)=>{
+    const key = STORE_PREFIX+(i+1);
+    if(d) localStorage.setItem(key, JSON.stringify(d));
+    else   localStorage.removeItem(key);
+  });
+}
+function loadAll(){
+  for(let i=0;i<3;i++){
+    const raw = localStorage.getItem(STORE_PREFIX+(i+1));
+    if(!raw) continue;
+    try{
+      slots[i] = migrate(JSON.parse(raw));
+    }catch(e){
+      slots[i] = null;
+      localStorage.removeItem(STORE_PREFIX+(i+1));
+      toast('bad','存档损坏','槽位 '+(i+1)+' 的存档无法读取，已重置','heart');
+    }
+  }
+}
+
+/* ============================================================
+   3. 音效（Web Audio 方波，MC 味）
+   ============================================================ */
+function ac(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e){ return null; }
+  }
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+function tone(freq, dur, type, vol, when){
+  const c = ac(); if(!c || muted) return;
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = type || 'square'; o.frequency.value = freq;
+  g.gain.value = vol || 0.04;
+  o.connect(g); g.connect(c.destination);
+  const t = c.currentTime + (when || 0);
+  o.start(t); o.stop(t + dur);
+}
+function sfx(name){
+  if(muted) return;
+  switch(name){
+    case 'click':  tone(220,.06,'square',.03); break;
+    case 'save':   [523,659,784].forEach((f,i)=>tone(f,.12,'square',.04,i*.09)); break;
+    case 'levelup':[523,659,784,1047].forEach((f,i)=>tone(f,.14,'square',.045,i*.1)); break;
+    case 'hurt':   tone(150,.18,'sawtooth',.05); tone(90,.2,'sawtooth',.04,.05); break;
+    case 'coin':   tone(988,.07,'square',.04); tone(1319,.1,'square',.04,.07); break;
+    case 'drink':  tone(500,.08,'sine',.05); tone(700,.1,'sine',.045,.08); break;
+    case 'death':  [400,300,200,120].forEach((f,i)=>tone(f,.18,'sawtooth',.05,i*.12)); break;
+  }
+}
+
+/* ============================================================
+   4. 成就 / 系统提示弹窗
+   ============================================================ */
+function toast(kind, cat, name, iconName){
+  const stack = document.getElementById('toastStack');
+  const el = document.createElement('div');
+  el.className = 'toast '+kind;
+  el.innerHTML =
+    (iconName ? sprite(iconName) : '') +
+    '<div><div class="t-cat">'+cat+'</div><div class="t-name">'+name+'</div></div>';
+  stack.appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),340); }, 3000);
+}
+
+/* ============================================================
+   5. 云同步：请求 Flask 的 /game/save；直开 HTML 时失败回退本地
+   ============================================================ */
+function cloudSync(){
+  return new Promise(resolve=>{
+    const ctrl = new AbortController();
+    const timer = setTimeout(()=>ctrl.abort(), 5000);
+    fetch(CLOUD_URL, { signal:ctrl.signal })
+      .then(r=>{ clearTimeout(timer); resolve(r.ok); })
+      .catch(()=>{ clearTimeout(timer); resolve(false); });
+  });
+}
+
+function saveSlot(i, withCloud){
+  const d = slots[i];
+  if(!d) return;
+  d.version = CURRENT_SAVE_VERSION;
+  d.save_time = fmtTime(new Date());
+  persist();
+  toast('good','游戏提示','游戏已保存到本地','grass');
+  sfx('save');
+  if(withCloud){
+    cloudSync().then(ok=>{
+      if(ok) toast('good','云同步成功','槽位 '+(i+1)+' 存档已上传','bluegem');
+      else   toast('bad','云同步失败','未连接 Flask，进度仅保存在本地','heart');
+    });
+  }
+  renderMenu();
+}
+
+/* ============================================================
+   6. 渲染：心形血条 / 菜单槽位 / 游戏 HUD
+   ============================================================ */
+function heartsHTML(hp){
+  const full = Math.floor(hp/10);
+  const half = (hp % 10) >= 5;
+  let out = '';
+  for(let i=0;i<10;i++){
+    if(i < full){
+      out += '<i class="heart">'+sprite('heart')+'</i>';
+    }else if(i === full && half){
+      out += '<i class="heart">'+sprite('heart',{R:'#3a1414',W:'#4a2020'})
+           + '<span class="h-fill">'+sprite('heart')+'</span></i>';
+    }else{
+      out += '<i class="heart">'+sprite('heart',{R:'#3a1414',W:'#4a2020'})+'</i>';
+    }
+  }
+  return out;
+}
+
+function groupedItems(arr){
+  const order = [], map = {};
+  arr.forEach(n=>{
+    if(!(n in map)){ map[n] = 0; order.push(n); }
+    map[n]++;
+  });
+  return order.slice(0,9).map(n=>({ name:n, count:map[n] }));
+}
+
+function renderMenu(){
+  const list = document.getElementById('slotList');
+  list.innerHTML = '';
+  slots.forEach((d,i)=>{
+    const el = document.createElement('button');
+    el.className = 'slot' + (i===selected?' active':'') + (d?'':' empty');
+    el.onclick = ()=>{ selected=i; resetDeleteBtn(); sfx('click'); renderMenu(); };
+    if(!d){
+      el.innerHTML =
+        '<div class="slot-icon"></div>'+
+        '<div class="slot-info">'+
+        '  <div class="slot-name">槽位 '+(i+1)+'</div>'+
+        '  <div class="slot-empty-text">— 空槽位，选中后可新建存档 —</div>'+
+        '</div>';
+    }else{
+      const items = groupedItems(d.inventory).slice(0,4)
+        .map(g=>'<div class="mini-cell">'+itemIcon(g.name)+'</div>').join('');
+      el.innerHTML =
+        '<div class="slot-icon">'+sprite('grass')+'</div>'+
+        '<div class="slot-info">'+
+        '  <div class="slot-name">世界 '+(i+1)+' <span class="ver-badge">v'+d.version+'</span></div>'+
+        '  <div class="slot-time">最后保存：'+(d.save_time || '从未')+'</div>'+
+        '  <div class="slot-stats">'+
+        '    <span class="chip">'+sprite('heart')+' '+d.hp+'</span>'+
+        '    <span class="chip">'+sprite('bluegem')+' '+d.mp+'</span>'+
+        '    <span class="chip">'+sprite('coin')+' '+d.gold+'</span>'+
+        '    <span class="chip" style="color:#a7ff9c">LV.'+d.level+'</span>'+
+        '  </div>'+
+        '</div>'+
+        '<div class="slot-items">'+items+'</div>';
+    }
+    list.appendChild(el);
+  });
+  const d = slots[selected];
+  document.getElementById('btnPlay').disabled   = !d;
+  document.getElementById('btnCloud').disabled  = !d;
+  document.getElementById('btnDelete').disabled = !d;
+  document.getElementById('btnNew').disabled    = !!d;
+}
+
+function renderGame(){
+  const d = game.data;
+  document.getElementById('gameTitle').textContent = '世界 '+(game.slot+1);
+  document.getElementById('hudHearts').innerHTML = heartsHTML(d.hp);
+  document.getElementById('manaFill').style.width = d.mp + '%';
+  document.getElementById('manaText').textContent = d.mp + '/100';
+  document.getElementById('goldText').textContent = d.gold;
+  document.getElementById('lvlText').textContent = d.level;
+  document.getElementById('xpNum').textContent = d.level;
+  document.getElementById('xpFill').style.width = Math.min(100, d.exp) + '%';
+
+  const hb = document.getElementById('hotbar');
+  hb.innerHTML = '';
+  const groups = groupedItems(d.inventory);
+  for(let i=0;i<9;i++){
+    const cell = document.createElement('div');
+    cell.className = 'cell' + (i===0?' selected':'') + (groups[i]?'':' empty-cell');
+    if(groups[i]){
+      cell.innerHTML = itemIcon(groups[i].name) +
+        (groups[i].count > 1 ? '<span class="count">'+groups[i].count+'</span>' : '');
+    }
+    hb.appendChild(cell);
+  }
+}
+
+function renderAll(){ renderGame(); renderMenu(); }
+
+function addLog(msg, cls){
+  logs.push({ t:new Date(), msg:msg, cls:cls||'' });
+  if(logs.length > 60) logs.shift();
+  const box = document.getElementById('logBox');
+  box.innerHTML = logs.slice(-8).map(l=>
+    '<div class="log-line '+l.cls+'"><span class="t">'+hhmm(l.t)+'</span>'+l.msg+'</div>').join('');
+}
+
+/* ============================================================
+   7. 游戏行为：战斗 / 药水 / 拾取 / 休息 / 升级 / 死亡
+   ============================================================ */
+const LOOT_TABLE = [
+  { n:'面包', w:24 },{ n:'火把', w:24 },{ n:'药水', w:18 },
+  { n:'金锭', w:16 },{ n:'钻石', w:7 },{ n:'铁剑', w:6 },{ n:'盾牌', w:5 }
+];
+function rollLoot(){
+  let total = 0;
+  LOOT_TABLE.forEach(x=> total += x.w);
+  let r = Math.random()*total;
+  for(const x of LOOT_TABLE){
+    r -= x.w;
+    if(r < 0) return x.n;
+  }
+  return '面包';
+}
+function itemKinds(d){ return new Set(d.inventory).size; }
+
+function levelUp(){
+  const d = game.data;
+  d.exp -= 100; d.level++; d.hp = 100; d.mp = 100;
+  addLog('升级！当前等级 LV.'+d.level+'，状态已完全恢复','sys');
+  toast('good','进度已达成','升级！达到 LV.'+d.level,'diamond');
+  sfx('levelup');
+}
+function die(){
+  const d = game.data;
+  const lost = Math.floor(d.gold/2);
+  d.gold -= lost; d.hp = 100; d.mp = 50; d.exp = 0;
+  addLog('你死了！损失 '+lost+' 金币，已在出生点重生','death');
+  toast('bad','你死了！','损失 '+lost+' 金币，已重生','heart');
+  sfx('death');
+}
+
+function actFight(){
+  const d = game.data;
+  const dmg = 4 + Math.floor(Math.random()*12);
+  d.hp = Math.max(0, d.hp - dmg);
+  addLog('你受到了 '+dmg+' 点伤害！','hurt');
+  sfx('hurt');
+  if(d.hp === 0){ die(); renderAll(); return; }
+
+  const g = Math.floor(Math.random()*45);
+  if(g > 0){ d.gold += g; addLog('击败怪物，获得 '+g+' 金币','gold'); sfx('coin'); }
+
+  d.exp += 15 + Math.floor(Math.random()*21);
+  if(Math.random() < 0.35){
+    const n = rollLoot();
+    if(itemKinds(d) < 9){ d.inventory.push(n); addLog('怪物掉落：'+n,'loot'); }
+    else addLog('背包已满，'+n+' 无法拾取','sys');
+  }
+  if(d.exp >= 100) levelUp();
+  renderAll();
+}
+
+function actPotion(){
+  const d = game.data;
+  if(d.hp >= 100){ addLog('生命值已满，不需要喝药水','sys'); return; }
+  const i = d.inventory.indexOf('药水');
+  if(i < 0){
+    addLog('背包里没有药水了','sys');
+    toast('bad','无法使用','没有药水了','potion');
+    sfx('click');
+    return;
+  }
+  d.inventory.splice(i,1);
+  const before = d.hp;
+  d.hp = Math.min(100, d.hp + 30);
+  addLog('喝下药水，恢复 '+(d.hp-before)+' 点生命','loot');
+  sfx('drink');
+  renderAll();
+}
+
+function actLoot(){
+  const d = game.data;
+  if(itemKinds(d) >= 9){ addLog('背包已满，无法拾取','sys'); return; }
+  const n = rollLoot();
+  d.inventory.push(n);
+  addLog('四处翻找，拾取了：'+n,'loot');
+  sfx('coin');
+  if(n === '钻石' || n === '金锭') toast('good','获得稀有物品',n,ITEM_ICON[n]);
+  renderAll();
+}
+
+function actRest(){
+  const d = game.data;
+  d.mp = 100;
+  d.hp = Math.min(100, d.hp + 10);
+  addLog('休息了一会儿，法力回满，体力恢复了 10 点','sys');
+  renderAll();
+}
+
+/* ============================================================
+   8. 视图切换与槽位操作
+   ============================================================ */
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+  document.getElementById('screen-'+name).classList.add('show');
+}
+
+function enterGame(){
+  if(!slots[selected]) return;
+  game = { slot:selected, data:slots[selected] };
+  logs = [];
+  addLog('存档已加载，欢迎回到世界 '+(selected+1),'sys');
+  addLog('最后保存时间：'+(slots[selected].save_time || '未知'),'sys');
+  showScreen('game');
+  renderAll();
+}
+
+function newGame(){
+  if(slots[selected]) return;
+  slots[selected] = defaultNewGame();
+  slots[selected].save_time = fmtTime(new Date());
+  persist();
+  toast('good','创建世界','世界 '+(selected+1)+' 已创建','grass');
+  sfx('levelup');
+  renderMenu();
+}
+
+function resetDeleteBtn(){
+  deleteArmed = false;
+  clearTimeout(deleteTimer);
+  const btn = document.getElementById('btnDelete');
+  btn.classList.remove('confirm');
+  btn.querySelector('span').textContent = '删除存档';
+}
+function onDelete(){
+  if(!slots[selected]) return;
+  const btn = document.getElementById('btnDelete');
+  if(!deleteArmed){
+    deleteArmed = true;
+    btn.classList.add('confirm');
+    btn.querySelector('span').textContent = '确认删除世界 '+(selected+1)+'？';
+    clearTimeout(deleteTimer);
+    deleteTimer = setTimeout(resetDeleteBtn, 3000);
+    sfx('click');
+    return;
+  }
+  slots[selected] = null;
+  persist();
+  resetDeleteBtn();
+  toast('bad','删除存档','世界 '+(selected+1)+' 已删除','heart');
+  sfx('hurt');
+  renderMenu();
+}
+
+function backToMenu(){
+  if(game){
+    game.data.save_time = fmtTime(new Date());
+    persist();
+    toast('good','游戏提示','返回前已自动保存到本地','grass');
+  }
+  game = null;
+  renderMenu();
+  showScreen('menu');
+}
+
+function renderMute(){
+  document.getElementById('btnMute').innerHTML = sprite(muted ? 'mute' : 'speaker');
+}
+
+/* ============================================================
+   9. 初始化：装饰方块、首次播种测试存档、事件绑定
+   ============================================================ */
+function init(){
+  loadAll();
+  if(!localStorage.getItem(SEED_KEY)){
+    if(!slots[0]){ slots[0] = demoGame(); persist(); }
+    localStorage.setItem(SEED_KEY, '1');
+  }
+
+  document.getElementById('logoBlock').innerHTML = sprite('grass');
+  document.getElementById('coinIcon').innerHTML = sprite('coin');
+  renderMute();
+
+  // 标题画面漂浮方块
+  const decoNames = ['grass','diamond','ingot','potion','torch','sword'];
+  const decoEl = document.getElementById('titleDeco');
+  decoNames.forEach((k,idx)=>{
+    const s = document.createElement('span');
+    s.className = 'deco-item';
+    const size = 34 + Math.random()*30;
+    s.style.cssText =
+      'width:'+size+'px;height:'+size+'px;'+
+      'left:'+(5+Math.random()*86)+'%;top:'+(6+Math.random()*78)+'%;'+
+      'animation:floaty '+(2.6+Math.random()*2.4)+'s ease-in-out infinite;'+
+      'animation-delay:'+(-Math.random()*3)+'s;opacity:.75';
+    s.innerHTML = sprite(k);
+    decoEl.appendChild(s);
+  });
+
+  // 按钮事件
+  document.getElementById('enterBtn').onclick = ()=>{
+    ac(); sfx('click'); renderMenu(); showScreen('menu');
+  };
+  document.getElementById('btnPlay').onclick   = enterGame;
+  document.getElementById('btnNew').onclick    = newGame;
+  document.getElementById('btnCloud').onclick  = ()=> saveSlot(selected, true);
+  document.getElementById('btnDelete').onclick = onDelete;
+  document.getElementById('btnSave').onclick   = ()=> saveSlot(game.slot, true);
+  document.getElementById('actFight').onclick  = actFight;
+  document.getElementById('actPotion').onclick = actPotion;
+  document.getElementById('actLoot').onclick   = actLoot;
+  document.getElementById('actRest').onclick   = actRest;
+  document.getElementById('btnBack').onclick   = backToMenu;
+  document.getElementById('btnMute').onclick   = ()=>{
+    muted = !muted; renderMute(); if(!muted){ ac(); sfx('click'); }
+  };
+
+  // 键盘操作
+  document.addEventListener('keydown', e=>{
+    const onTitle = document.getElementById('screen-title').classList.contains('show');
+    const onMenu  = document.getElementById('screen-menu').classList.contains('show');
+    const onGame  = document.getElementById('screen-game').classList.contains('show');
+
+    if(onTitle){
+      ac(); renderMenu(); showScreen('menu');
+      return;
+    }
+    if(onMenu){
+      if(e.key === 'ArrowUp'){
+        selected = (selected + 2) % 3; sfx('click'); resetDeleteBtn(); renderMenu();
+      }else if(e.key === 'ArrowDown'){
+        selected = (selected + 1) % 3; sfx('click'); resetDeleteBtn(); renderMenu();
+      }else if(e.key === 'Enter'){
+        slots[selected] ? enterGame() : newGame();
+      }else if(e.key === 'Escape'){
+        showScreen('title');
+      }
+    }
+    if(onGame && game){
+      if(e.key === '1') actFight();
+      if(e.key === '2') actPotion();
+      if(e.key === '3') actLoot();
+      if(e.key === '4') actRest();
+      if(e.key === 's' || e.key === 'S') saveSlot(game.slot, true);
+      if(e.key === 'Escape') backToMenu();
+    }
+  });
+
+  renderMenu();
+}
+
+init();
+</script>
+
+
+</body>
+</html>
